@@ -120,6 +120,29 @@ ol.steps{list-style:none;margin:0;padding:0;display:grid;gap:14px}
 @keyframes tw{50%{opacity:.2}}
 @media(max-width:760px){.hin{grid-template-columns:minmax(0,1fr);padding-bottom:84px;gap:64px}.stagewrap{height:400px}.stage.fixed{width:120px;height:175px;right:4px;bottom:4px}.stage.fixed .bub{max-width:200px}.stage.fixed .tagn{display:none}}
 @media(max-width:600px){.doors{grid-template-columns:minmax(0,1fr);margin-top:-48px}.step{grid-template-columns:42px minmax(0,1fr);gap:10px}.num{font-size:32px}.chk{margin-left:0}}
+.vagas{margin:28px auto 0;max-width:820px;background:var(--panel);border:3px solid var(--line);padding:20px}
+.vtop{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 20px}
+.vtop h2{margin:0;font-size:clamp(26px,3.6vw,34px);line-height:1.1}
+.vcount{font-size:clamp(30px,5vw,44px);font-weight:700;color:var(--red3);white-space:nowrap}
+.vcount small{font-size:18px;color:var(--mute)}
+.vbar{display:grid;grid-template-columns:repeat(30,minmax(0,1fr));gap:3px;margin:12px 0 6px}
+.vbar span{height:14px;background:#2a1d20}
+.vbar span.f{background:var(--red2)}
+.vbar span.n{background:var(--red3);animation:blink 1s steps(1) infinite}
+.vsub{color:var(--mute);font-size:15px;margin:0 0 14px}
+.vform{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:10px;align-items:end}
+.vform label{display:grid;gap:4px;font-size:14px;color:var(--mute)}
+.vform input{font:inherit;font-size:16px;min-height:44px;padding:0 12px;background:#0f0b0c;color:var(--ink);border:2px solid var(--line);outline:none}
+.vform input:focus{border-color:var(--red2)}
+.vmsg{min-height:22px;margin:10px 0 0;font-size:15px}
+.vmsg.ok{color:#9be59b}.vmsg.err{color:#ffb4a8}
+.vlist{margin-top:14px}
+.vlist summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:6px 0 4px}
+.chip{display:inline-flex;gap:6px;align-items:center;background:#24181b;border:2px solid var(--line);padding:4px 10px;font-size:15px;animation:pop .4s steps(3) both}
+.chip i{font-style:normal;color:var(--red3)}
+.chip.me{border-color:var(--red3)}
+@media(max-width:700px){.vform{grid-template-columns:minmax(0,1fr)}.vform .btn{justify-content:center}}
 .mnav{display:none}
 body:not(.chosen) .after{display:none}
 @media(max-width:600px){.path .step{display:none}.path .step.cur{display:grid}.mnav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px}.mnav span{color:var(--mute);font-size:15px;white-space:nowrap}.mnav .btn{padding:0 12px;white-space:nowrap;font-size:15px}.tlp .mnav .btn{background:var(--vio)}.mnav .btn[disabled]{background:#2a2023;color:var(--mute);box-shadow:none;cursor:default}}
@@ -154,6 +177,19 @@ body:not(.chosen) .after{display:none}
 </nav>
 <div class="note"><span class="bang" aria-hidden="true">!</span><div class="ntx"><b>Antes de tudo:</b> abra um ticket com seu <u>nick exato</u>.<small>maiúsculas e minúsculas contam · horário: 19h às 23h</small></div><a class="btn mini" id="note-btn" href="https://discord.gg/snicket" target="_blank" rel="noopener">Abrir ticket</a></div>
 
+<section class="vagas pc" id="vagas" aria-label="Garantir vaga">
+<div class="vtop"><h2>Garanta sua vaga</h2><div class="vcount"><span id="vn">–</span><small> / 30 vagas</small></div></div>
+<div class="vbar" id="vbar"></div>
+<p class="vsub" id="vsub">Carregando as vagas...</p>
+<form class="vform" id="vform" autocomplete="off">
+<label for="f-nick">Nickname do Minecraft<input id="f-nick" name="nick" maxlength="16" required placeholder="SeuNick"></label>
+<label for="f-dc">@ do Discord<input id="f-dc" name="discord" maxlength="40" required placeholder="@usuario"></label>
+<label for="f-ig">@ do Instagram<input id="f-ig" name="insta" maxlength="31" required placeholder="@perfil"></label>
+<button class="btn" type="submit" id="f-btn">Garantir vaga</button>
+</form>
+<p class="vmsg" id="vmsg" role="status"></p>
+<details class="vlist" id="vlist"><summary id="vsum">Quem já garantiu</summary><div class="chips" id="chips"></div></details>
+</section>
 <section class="path orip" id="p-ori" aria-label="Tutorial original">
 <div class="phead"><h2>Minecraft original</h2><span class="prog" id="g-ori"></span></div>
 <div class="bar" id="b-ori"></div>
@@ -462,6 +498,49 @@ const em = document.getElementById("embers");
 em.innerHTML = Array.from({length: 18}, (_, i) => `<span class="ember" style="left:${(i * 53) % 100}%;animation-duration:${8 + (i * 7) % 9}s;animation-delay:-${(i * 3) % 9}s;opacity:${.4 + (i % 4) * .15}"></span>`).join("");
 
 if (location.hash) { try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} }
+
+/* ---------- vagas (Supabase) ---------- */
+const SB = "https://pwpvvdfuaovlpfbtyxep.supabase.co", SBK = "sb_publishable_pWJ6EdkpIL4WgxYuHM4CKw_gFbpwli4", LIM = 30;
+const rpc = (fn, body) => fetch(`${SB}/rest/v1/rpc/${fn}`, {method: "POST", headers: {apikey: SBK, "Content-Type": "application/json"}, body: JSON.stringify(body || {})}).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
+const vn = document.getElementById("vn"), vbar = document.getElementById("vbar"), vsub = document.getElementById("vsub"), vmsg = document.getElementById("vmsg");
+const vform = document.getElementById("vform"), fbtn = document.getElementById("f-btn"), chips = document.getElementById("chips"), vsum = document.getElementById("vsum");
+let mine = ""; try { mine = localStorage.getItem("snk-vaga") || ""; } catch (e) {}
+const esc = t => String(t).replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+let lastN = -1;
+const drawVagas = list => {
+  const n = list.length, left = Math.max(0, LIM - n);
+  vn.textContent = n;
+  vbar.innerHTML = Array.from({length: LIM}, (_, i) => `<span class="${i < n ? "f" : i === n ? "n" : ""}"></span>`).join("");
+  vsub.textContent = left === 0 ? "Vagas esgotadas! Fique de olho no Discord para a próxima leva." : left <= 5 ? `Corre! Só ${left} vaga${left > 1 ? "s" : ""} restante${left > 1 ? "s" : ""}.` : `${left} vagas restantes. Garanta a sua antes que acabe.`;
+  vsum.textContent = `Quem já garantiu (${n})`;
+  chips.innerHTML = n ? list.map((v, i) => `<span class="chip${mine && v.nick.toLowerCase() === mine.toLowerCase() ? " me" : ""}"><i>#${i + 1}</i>${esc(v.nick)}</span>`).join("") : `<span class="vsub">Ninguém ainda. Seja o primeiro!</span>`;
+  const full = left === 0;
+  for (const el of vform.elements) el.disabled = full;
+  if (mine) { vmsg.className = "vmsg ok"; vmsg.textContent = `✓ Você já garantiu sua vaga como ${mine}. Não esquece de abrir seu ticket no Discord!`; }
+  lastN = n;
+};
+const loadVagas = () => rpc("mine_lista_vagas").then(drawVagas).catch(() => { vsub.textContent = "Não consegui carregar as vagas agora. Tente atualizar a página."; });
+const ERR = {nick: "Nick inválido: use de 3 a 16 letras, números ou _ (sem espaço).", discord: "Coloque o seu @ do Discord.", insta: "Coloque o seu @ do Instagram (letras, números, ponto ou _).", repetido: "Esse nick já garantiu vaga!", lotado: "As vagas acabaram! 😢"};
+vform.addEventListener("submit", e => {
+  e.preventDefault();
+  const nick = document.getElementById("f-nick").value.trim(), dc = document.getElementById("f-dc").value.trim(), ig = document.getElementById("f-ig").value.trim();
+  fbtn.disabled = true; fbtn.textContent = "Garantindo..."; vmsg.className = "vmsg"; vmsg.textContent = "";
+  rpc("mine_reservar_vaga", {p_nick: nick, p_discord: dc, p_insta: ig}).then(r => {
+    if (r && r.ok) {
+      mine = nick; try { localStorage.setItem("snk-vaga", nick); } catch (e2) {}
+      vmsg.className = "vmsg ok"; vmsg.textContent = `✓ Vaga #${r.total} garantida, ${nick}! Agora abra seu ticket no Discord.`;
+      vform.reset(); doAct("dance", 3); say(`Vaga garantida, ${nick}! Te vejo no lobby ✦`, 5000);
+    } else {
+      vmsg.className = "vmsg err"; vmsg.textContent = ERR[r && r.erro] || "Algo deu errado, tente de novo.";
+      doAct("shy"); say(r && r.erro === "lotado" ? "Ah não... as vagas acabaram!" : "Opa, confere os dados aí!", 3500);
+    }
+  }).catch(() => { vmsg.className = "vmsg err"; vmsg.textContent = "Sem conexão com o servidor de vagas. Tente de novo."; })
+    .finally(() => { fbtn.disabled = false; fbtn.textContent = "Garantir vaga"; loadVagas(); });
+});
+vform.addEventListener("focusin", () => { if (!act) { doAct("nod"); say("Preenche aí que eu guardo seu lugar!", 3500); } }, {once: true});
+loadVagas();
+setInterval(() => { if (!document.hidden) loadVagas(); }, 20000);
+
 all(); show();
 setTimeout(() => { doAct("wave", 2.2); say("Oi! Eu sou a Mimi. Escolha seu caminho aqui embaixo!", 6000); }, 600);
 }

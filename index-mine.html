@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tutorial Snicket 1.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE playful guide for friends, dark and mysterious like the Snicket lobby
+   IDEA the lobby itself: a night portal where [DEV] Mimi greets you and points the way
+   PICTURE pixel portal with Mimi in 3D on a floating island, speech bubble, embers
+   COLOUR night black ground, bone ink, Snicket red dominant, bright red accent, violet for TLauncher
+   TYPE Pixelify Sans everywhere, like the GIFs
+   LAYOUT title left and portal right on laptop; phone stacks title, portal, path doors, steps */
+:root{color-scheme:dark;--bg:#0b0809;--panel:#161012;--line:#2c1f22;--ink:#ece4d6;--mute:#ab9e92;--red:#7a0c12;--red2:#c4202c;--red3:#ff5a5f;--vio:#7b4bd1;--vio2:#b490ff;--portal:#050304}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:20px}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "Pixelify Sans",ui-monospace,monospace;overflow-x:clip}
+a{color:inherit}
+.wrap{max-width:1000px;margin:0 auto}
+.band{padding:clamp(28px,4vw,56px) max(5vw,16px)}
+.pc{clip-path:polygon(0 6px,6px 6px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 6px,100% 6px,100% calc(100% - 6px),calc(100% - 6px) calc(100% - 6px),calc(100% - 6px) 100%,6px 100%,6px calc(100% - 6px),0 calc(100% - 6px))}
+.hero{position:relative;overflow:hidden;background:linear-gradient(#140a10,#0b0809);border-bottom:4px solid var(--red)}
+#sky{position:absolute;inset:0;width:100%;height:100%}
+.ember{position:absolute;bottom:-10px;width:4px;height:4px;background:var(--red3);animation:rise linear infinite}
+@keyframes rise{to{transform:translateY(-110vh)}}
+.hin{position:relative;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:24px;align-items:center;max-width:1000px;margin:0 auto;padding:clamp(32px,5vw,64px) max(5vw,16px) 96px}
+h1{font-size:clamp(38px,6vw,62px);line-height:1.02;margin:0 0 14px;font-weight:700;text-wrap:balance}
+h1 b{color:var(--red3);display:inline-block;animation:glitch 4s steps(1) infinite}
+@keyframes glitch{0%,92%,100%{text-shadow:3px 3px 0 #3a0a0f;transform:none}93%{text-shadow:-3px 0 0 var(--vio2),3px 0 0 var(--red2);transform:translateX(2px)}95%{text-shadow:3px 0 0 var(--vio2),-3px 0 0 var(--red2);transform:translateX(-2px)}}
+.lead{max-width:30em;color:var(--mute);margin:0}
+.stage{position:absolute;inset:0;cursor:pointer;animation:float 5s steps(10) infinite}
+@keyframes float{50%{transform:translateY(-10px)}}
+.spark{position:absolute;width:6px;height:6px;background:var(--red3);animation:spk 3s steps(6) infinite;pointer-events:none}
+.spark.b{background:var(--ink);width:4px;height:4px}
+@keyframes spk{0%{opacity:0;transform:translateY(10px)}30%{opacity:1}100%{opacity:0;transform:translateY(-50px)}}
+.stage:focus-visible{outline:4px solid var(--ink);outline-offset:4px}
+#npc{position:absolute;left:0;right:0;top:0;width:100%;height:calc(100% - 40px)}
+#isl{position:absolute;left:0;right:0;top:0;width:100%;height:70px}
+.tagn{position:absolute;left:0;top:0;transform:translate(-50%,-100%);will-change:transform;z-index:2;background:#0009;padding:2px 10px;font-size:16px;white-space:nowrap;pointer-events:none}
+.tagn i{font-style:normal;color:var(--red3)}
+.bub{pointer-events:none;position:absolute;left:0;top:0;width:max-content;max-width:min(270px,90%);z-index:3;padding:4px;background:#3a0a0f;will-change:transform;clip-path:polygon(0 8px,4px 8px,4px 4px,8px 4px,8px 0,calc(100% - 8px) 0,calc(100% - 8px) 4px,calc(100% - 4px) 4px,calc(100% - 4px) 8px,100% 8px,100% calc(100% - 8px),calc(100% - 4px) calc(100% - 8px),calc(100% - 4px) calc(100% - 4px),calc(100% - 8px) calc(100% - 4px),calc(100% - 8px) 100%,8px 100%,8px calc(100% - 4px),4px calc(100% - 4px),4px calc(100% - 8px),0 calc(100% - 8px))}
+.bub span{display:block;background:var(--ink);color:#1a1012;padding:9px 13px;font-size:16px;line-height:1.35;background-image:linear-gradient(#0000000a 50%,#0000 50%);background-size:100% 4px;clip-path:polygon(0 4px,4px 4px,4px 0,calc(100% - 4px) 0,calc(100% - 4px) 4px,100% 4px,100% calc(100% - 4px),calc(100% - 4px) calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,4px calc(100% - 4px),0 calc(100% - 4px))}
+.tail{pointer-events:none;position:absolute;left:0;top:0;width:4px;height:4px;background:var(--ink);z-index:3;box-shadow:-4px -4px 0 var(--ink),0 -4px 0 var(--ink),4px -4px 0 var(--ink),-8px -8px 0 #3a0a0f,-4px -8px 0 var(--ink),0 -8px 0 var(--ink),4px -8px 0 var(--ink),8px -8px 0 #3a0a0f,4px 0 0 #3a0a0f,-4px 0 0 #3a0a0f,0 4px 0 #3a0a0f;will-change:transform}
+.stagewrap{position:relative;height:clamp(380px,40vw,460px)}
+.stage.fixed{position:fixed;inset:auto;right:8px;bottom:8px;width:170px;height:250px;z-index:20;animation:enter .4s steps(4)}
+.stage.fixed .hint{display:none}
+.stage.fixed .bub{max-width:250px}
+@keyframes enter{from{transform:translateY(60px);opacity:0}}
+.bub.hide{opacity:0}
+.bub.pop{animation:bpop .3s steps(3)}
+@keyframes bpop{from{scale:.6}}
+
+.hint{position:absolute;left:0;right:0;text-align:center;bottom:14px;font-size:13px;color:var(--mute);pointer-events:none}
+.doors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:-56px;position:relative}
+.door{display:block;text-decoration:none;background:var(--panel);border:4px solid var(--line);padding:20px 22px;transition:transform .2s steps(3)}
+.door:hover,.door:focus-visible{transform:translateY(-6px);outline:none}
+.door.ori{border-color:var(--red2)}
+.door.tl{border-color:var(--vio)}
+.door.on.ori{background:linear-gradient(160deg,#3a0a0f,var(--panel))}
+.door.on.tl{background:linear-gradient(160deg,#2a1748,var(--panel))}
+.door h2{font-size:28px;margin:6px 0 4px;line-height:1.1}
+.door p{margin:0;color:var(--mute);font-size:16px}
+.tag{display:inline-block;font-size:14px;padding:2px 10px;color:#fff}
+.ori .tag{background:var(--red)}
+.tl .tag{background:var(--vio)}
+.note{position:relative;overflow:hidden;display:flex;align-items:center;gap:12px;max-width:620px;margin:22px auto 0;padding:10px 10px 10px 12px;font-size:15px;line-height:1.35;background:#1d1214;border:3px solid var(--red2);animation:nglow 1.4s steps(2) infinite}
+@keyframes nglow{50%{border-color:var(--red3);background:#25151a}}
+.note::after{content:"";position:absolute;top:0;bottom:0;width:40px;left:-60px;background:#ffffff14;transform:skewX(-20deg);animation:shine 3.2s steps(12) infinite;pointer-events:none}
+@keyframes shine{60%,100%{left:110%}}
+.note b{color:var(--red3)}
+.note small{display:block;color:var(--mute);font-size:13px;margin-top:2px}
+.ntx{flex:1}
+.bang{flex:none;display:grid;place-items:center;width:30px;height:30px;background:var(--red2);color:#fff;font-weight:700;font-size:20px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{background:var(--red3)}}
+.btn.mini{min-height:40px;padding:0 12px;font-size:14px;flex:none}
+@media(max-width:600px){.note{flex-wrap:wrap}.note .btn.mini{width:100%;justify-content:center}}
+.path{display:none}
+.path.on{display:block}
+.phead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 20px;margin:34px 0 16px}
+.phead h2{font-size:clamp(28px,4vw,40px);margin:0;line-height:1.1}
+.prog{color:var(--mute);white-space:nowrap}
+.bar{display:grid;gap:4px;margin:0 0 22px}
+.bar span{height:10px;background:var(--line)}
+.bar span.f{background:var(--red2)}
+.tlp .bar span.f{background:var(--vio2)}
+ol.steps{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.step{display:grid;grid-template-columns:64px minmax(0,1fr);gap:16px;background:var(--panel);border:2px solid var(--line);padding:18px 18px 18px 12px;animation:pop .5s steps(4) both}
+@keyframes pop{from{opacity:0;transform:translateY(12px)}}
+.step.done{opacity:.55}
+.num{font-size:44px;line-height:1;color:var(--red3);text-align:center;font-weight:700}
+.tlp .num{color:var(--vio2)}
+.step h3{margin:2px 0 6px;font-size:21px;line-height:1.2}
+.step p{margin:0 0 6px;color:#ddd3c5}
+.step code{background:#24181b;border:2px solid var(--line);padding:0 6px;font:inherit;font-size:15px;overflow-wrap:anywhere}
+.warn{color:#ffb4a8}
+.acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border:0;font:inherit;font-size:16px;font-weight:700;text-decoration:none;cursor:pointer;color:#fff;background:var(--red2);box-shadow:inset -4px -4px 0 #0005,inset 4px 4px 0 #fff3}
+.tlp .btn{background:var(--vio)}
+.btn:hover{filter:brightness(1.15)}
+.btn:active{transform:translateY(2px);box-shadow:inset 4px 4px 0 #0005}
+.btn:focus-visible,.chk:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.btn.off{background:#2a2023!important;color:var(--mute);cursor:not-allowed;box-shadow:none}
+.btn.ghost{background:#24181b}
+.chk{margin-left:auto;display:inline-flex;align-items:center;min-height:44px;padding:0 12px;border:2px solid var(--line);background:transparent;color:var(--mute);font:inherit;font-size:15px;cursor:pointer}
+.step.done .chk{color:var(--ink);border-color:var(--ink)}
+.ip{font-size:20px;white-space:nowrap}
+.faq details{background:var(--panel);border:2px solid var(--line);padding:0 16px;margin-bottom:10px}
+.faq summary{cursor:pointer;min-height:52px;display:flex;align-items:center;font-weight:700}
+.faq details p{margin:0 0 14px;color:#ddd3c5}
+.sec{font-size:clamp(28px,3.6vw,36px);margin:0 0 16px}
+.end{background:var(--red);color:#fff}
+.end p{margin:0 0 14px;max-width:36em}
+.end .btn{background:#fff;color:var(--red)}
+.small{font-size:14px;color:#ffd9d9}
+.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,140px);background:var(--ink);color:var(--bg);font-weight:700;padding:12px 18px;transition:transform .25s steps(4);z-index:9}
+.toast.show{transform:translate(-50%,0)}
+.tw{animation:tw 3s steps(3) infinite}
+@keyframes tw{50%{opacity:.2}}
+@media(max-width:760px){.hin{grid-template-columns:minmax(0,1fr);padding-bottom:84px;gap:64px}.stagewrap{height:400px}.stage.fixed{width:120px;height:175px;right:4px;bottom:4px}.stage.fixed .bub{max-width:200px}.stage.fixed .tagn{display:none}}
+@media(max-width:600px){.doors{grid-template-columns:minmax(0,1fr);margin-top:-48px}.step{grid-template-columns:42px minmax(0,1fr);gap:10px}.num{font-size:32px}.chk{margin-left:0}}
+.mnav{display:none}
+body:not(.chosen) .after{display:none}
+@media(max-width:600px){.path .step{display:none}.path .step.cur{display:grid}.mnav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px}.mnav span{color:var(--mute);font-size:15px;white-space:nowrap}.mnav .btn{padding:0 12px;white-space:nowrap;font-size:15px}.tlp .mnav .btn{background:var(--vio)}.mnav .btn[disabled]{background:#2a2023;color:var(--mute);box-shadow:none;cursor:default}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+<svg id="sky" aria-hidden="true"></svg>
+<div id="embers" aria-hidden="true"></div>
+<div class="hin">
+<div>
+<h1>Como entrar no <b>SNICKET 1.0</b></h1>
+<p class="lead">Escolha o seu caso logo abaixo e siga os passos na ordem. Leva uns 10 minutos, e a Mimi te acompanha.</p>
+</div>
+<div class="stagewrap" id="stagewrap"><div class="stage" id="stage" role="button" tabindex="0" aria-label="[DEV] Mimi, clique para interagir">
+<div class="bub" id="bubBox"><span id="bub" aria-live="polite"></span></div><div class="tail" id="tail"></div><div id="sparks" aria-hidden="true"></div>
+<canvas id="npc"></canvas>
+<svg id="isl" aria-hidden="true"></svg>
+<div class="tagn"><i>[DEV]</i> Mimi</div>
+<div class="hint">clique em mim</div>
+</div></div>
+</div>
+</header>
+
+<main class="band" style="padding-top:0">
+<div class="wrap">
+<nav class="doors" aria-label="Escolha seu caso">
+<a class="door ori pc" href="#original" id="d-ori"><span class="tag">Comprei o jogo</span><h2>Minecraft original</h2><p>Instalação pelo CurseForge, com o modpack que já vem pronto.</p></a>
+<a class="door tl pc" href="#tlauncher" id="d-tl"><span class="tag">Jogo pelo TLauncher</span><h2>TLauncher</h2><p>Fabric 26.3 e a pasta de mods colocada à mão.</p></a>
+</nav>
+<div class="note"><span class="bang" aria-hidden="true">!</span><div class="ntx"><b>Antes de tudo:</b> abra um ticket com seu <u>nick exato</u>.<small>maiúsculas e minúsculas contam · horário: 19h às 23h</small></div><a class="btn mini" id="note-btn" href="https://discord.gg/snicket" target="_blank" rel="noopener">Abrir ticket</a></div>
+
+<section class="path orip" id="p-ori" aria-label="Tutorial original">
+<div class="phead"><h2>Minecraft original</h2><span class="prog" id="g-ori"></span></div>
+<div class="bar" id="b-ori"></div>
+<ol class="steps" id="s-ori"></ol><div class="mnav" id="n-ori"></div>
+</section>
+<section class="path tlp" id="p-tl" aria-label="Tutorial TLauncher">
+<div class="phead"><h2>TLauncher</h2><span class="prog" id="g-tl"></span></div>
+<div class="bar" id="b-tl"></div>
+<ol class="steps" id="s-tl"></ol><div class="mnav" id="n-tl"></div>
+</section>
+</div>
+</main>
+
+<section class="band faq after" style="border-top:2px solid var(--line)">
+<div class="wrap">
+<h2 class="sec">Deu problema?</h2>
+<div id="faq"></div>
+</div>
+</section>
+
+<section class="band end after">
+<div class="wrap">
+<h2 class="sec">Nada resolveu?</h2>
+<p>Abra um ticket no Discord com um print do erro, que a gerência te ajuda.</p>
+<a class="btn" id="end-discord" href="#">Discord dos Snickets</a>
+<p class="small" style="margin-top:16px">A noite guarda segredos...</p>
+</div>
+</section>
+
+<div class="toast pc" id="toast" role="status"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/skinview3d@3.1.0/bundles/skinview3d.bundle.js"></script>
+<script>
+{
+/* ====== EDITE AQUI: links de download e endereço do servidor ======
+   Deixe "" para mostrar o botão como "em breve". */
+const LINKS = {
+  discord: "https://discord.gg/snicket",
+  curseforge: "https://www.curseforge.com/download/app",
+  modpack: "https://drive.google.com/uc?export=download&id=1ztcRNXQ5ryZh6_Jd1vVMLvWiDIyX2uYp",
+  tlauncher: "https://tlauncher.org/#dPopup",
+  mods: "https://drive.google.com/uc?export=download&id=1iemqGgfXqJ4xupmqijn9qlVHexja7lVU",
+  shader: "https://www.curseforge.com/minecraft/shaders/complementary-unbound"
+};
+const IP = "snicket.exaroton.me";
+/* ================================================================= */
+const SKIN = "data:image/png;base64,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";
+
+const btn = (key, label) => LINKS[key]
+  ? `<a class="btn" href="${LINKS[key]}" target="_blank" rel="noopener">⬇ ${label}</a>`
+  : `<span class="btn off">${label} · em breve</span>`;
+const ipBox = () => IP
+  ? `<span class="ip">${IP}</span><button class="btn ghost" type="button" data-copy="${IP}">Copiar endereço</button>`
+  : `<span class="btn off">endereço em breve</span>`;
+
+const TIPS_O = ["Primeiro o ticket! Sem ele, a lista não te deixa entrar.","O CurseForge cuida de tudo pra você.","Esse zip é pequeno, baixa rapidinho.","Create Custom Profile, depois Import. Eu espero!","Use o botão de copiar, sem erro de digitação.","Pega o kit no baú antes de tocar na estrela!","Shader deixa tudo lindo... se o PC aguentar."];
+const TIPS_T = ["Manda o nick igualzinho ao do TLauncher!","Fabric 26.3, hein? Não erra a versão.","São uns 91 MB, pega um copo d'água.","Windows + R, cola e Enter. Fácil!","Os .jar direto na pasta mods, nada de pasta dentro de pasta!","Use o botão de copiar o endereço.","Guarda sua senha, viu? A noite não perdoa."];
+const ORI = [
+  {t:"Abra seu ticket", d:"Mande no ticket o seu nick exato do Minecraft para a gerência te colocar na lista do servidor.", a:()=>btn("discord","Abrir o Discord")},
+  {t:"Instale o CurseForge", d:"Baixe e instale o app do CurseForge no seu PC. Na primeira vez, escolha <b>Minecraft</b> como jogo.", a:()=>btn("curseforge","Baixar CurseForge")},
+  {t:"Baixe o modpack da Snicket", d:"É o arquivo <code>Snicket_2.zip</code>. Não precisa descompactar.", a:()=>btn("modpack","Baixar modpack")},
+  {t:"Importe o modpack", d:"No CurseForge: <b>Minecraft</b> → <b>Create Custom Profile</b> → <b>Import</b> → escolha o <code>Snicket_2.zip</code>. Espere ele baixar todos os mods."},
+  {t:"Abra o jogo e adicione o servidor", d:"Clique em <b>Play</b>. No jogo: <b>Multijogador</b> → <b>Adicionar servidor</b>. Nome: <code>SNICKET 1.0</code>.", a:ipBox},
+  {t:"Entre e toque na estrela", d:"Você nasce no lobby da Snicket. Pegue o kit no baú flutuante e toque na estrela ★ do centro para ir ao mundo.<br>Se pedir senha: primeira vez <code>/register suasenha suasenha</code>, depois <code>/login suasenha</code>."},
+  {t:"Opcional: Complementary Shaders – Unbound", d:"Baixe o shader <b>Complementary Shaders – Unbound</b>, coloque o arquivo na pasta <code>shaderpacks</code> e ative em <b>Opções → Vídeo → Shader Packs</b>. PC fraco? Pule este passo.", a:()=>btn("shader","Complementary Unbound")}
+];
+const TL = [
+  {t:"Abra seu ticket", d:"Mande no ticket o nick que você usa no TLauncher, exatamente igual.", a:()=>btn("discord","Abrir o Discord")},
+  {t:"Instale o TLauncher e escolha Fabric 26.3", d:"Na lista de versões, selecione <b>Fabric 26.3</b>. Clique em <b>Entrar</b>, espere o jogo abrir e <b>feche</b>. Isso cria as pastas certas.", a:()=>btn("tlauncher","Baixar TLauncher")},
+  {t:"Baixe a pasta de mods", d:"É o arquivo <code>mods-snicket-jogadores.zip</code> (cerca de 91 MB).", a:()=>btn("mods","Baixar mods")},
+  {t:"Abra a pasta do Minecraft", d:"Aperte <b>Windows + R</b>, cole <code>%appdata%\\.minecraft</code> e dê Enter. Abra a pasta <code>mods</code>. Se não existir, crie uma com esse nome."},
+  {t:"Coloque os mods", d:"Extraia o zip e coloque <b>os arquivos .jar</b> dentro de <code>mods</code>.<br><span class=\"warn\">Eles têm que ficar direto na pasta mods, não numa pasta dentro dela.</span>"},
+  {t:"Abra o jogo e adicione o servidor", d:"Abra o TLauncher com <b>Fabric 26.3</b>. Vá em <b>Multijogador</b> → <b>Adicionar servidor</b>. Nome: <code>SNICKET 1.0</code>.", a:ipBox},
+  {t:"Faça seu login", d:"Primeira vez: <code>/register suasenha suasenha</code>. Depois: <code>/login suasenha</code>. Então toque na estrela ★ do lobby.<br>Skin: <code>/skin set NickDeAlguémComASkin</code>."}
+];
+const FAQ = [
+  ["“Incompatible mods found”","Algum mod está na versão errada ou repetido. Apague tudo da pasta mods e coloque de novo os mods do link oficial."],
+  ["“Você não está na lista-branca”","Abra um ticket com o seu nick exatamente igual ao do jogo, com as mesmas maiúsculas e minúsculas."],
+  ["O jogo trava ou fica lento","Desligue o shader. No TLauncher, aumente a memória nas configurações: 4 GB é o ideal."],
+  ["“Sessão inválida” ou “não autenticado”","Avise a gerência pelo ticket, é uma configuração do servidor."],
+  ["Esqueci minha senha","Abra um ticket que a gerência reseta para você."],
+  ["O servidor não aparece online","Ele abre das 19h às 23h. Fora desse horário, pode estar desligado."]
+];
+
+/* ---------- fala da Mimi ---------- */
+const bub = document.getElementById("bub"), bubBox = document.getElementById("bubBox"), tail = document.getElementById("tail");
+let typing, idleT, said = 0;
+const say = (txt, hold) => {
+  clearInterval(typing); clearTimeout(idleT);
+  let i = 0; bub.textContent = ""; bubBox.classList.remove("pop"); void bubBox.offsetWidth; bubBox.classList.add("pop");
+  typing = setInterval(() => { bub.textContent = txt.slice(0, ++i); if (i >= txt.length) clearInterval(typing); }, 28);
+  idleT = setTimeout(idle, hold || 5200);
+};
+const IDLE = ["Bem-vindo à noite Snicket...", "Escolha seu caminho logo aqui embaixo!", "Comprou o jogo? Vai de CurseForge.", "Joga pelo TLauncher? Tem tutorial também.", "Pode clicar em mim, eu não mordo... muito.", "A noite guarda segredos ✦", "Já abriu seu ticket?"];
+const CLICK = ["Ei! Isso faz cócegas.", "Olha esse pulo!", "Wiii!", "Um Snicket nunca fica pra trás!", "Te vejo no lobby ✦", "Isso foi um susto?"];
+const idle = () => say(IDLE[said++ % IDLE.length]);
+
+/* ---------- NPC 3D ---------- */
+const stage = document.getElementById("stage"), cv = document.getElementById("npc"), tagn = document.querySelector(".tagn");
+let footY = -1, isl0 = document.getElementById("isl"), act = null, at = 0, mx = 0, my = 0, hy = 0, hx = 0, px = 0, viewer = null, nextIdle = 4, clockIdle = 0, v3 = null;
+const doAct = (n, d, extra) => { act = Object.assign({n, d: d || 1.6}, extra || {}); at = 0; };
+const place = (sx, sy) => {
+  const W = stage.clientWidth, bw = bubBox.offsetWidth, bh = bubBox.offsetHeight, fx = stage.classList.contains("fixed");
+  tagn.style.transform = `translate(${sx}px,${sy}px) translate(-50%,-100%)`;
+  const gap = fx ? 14 : 38;
+  const bx = fx ? Math.min(W - bw - 4, sx - bw / 2) : Math.max(4, Math.min(W - bw - 4, sx - bw / 2));
+  const by = Math.max(-bh - 40, sy - gap - bh);
+  bubBox.style.transform = `translate(${bx}px,${by}px)`;
+  const tx = Math.round(Math.max(bx + 14, Math.min(bx + bw - 14, sx)) / 4) * 4;
+  tail.style.transform = `translate(${tx}px,${by + bh + 4}px)`;
+};
+try {
+  cv.getContext("webgl2", {alpha: true, premultipliedAlpha: true, antialias: true}) || cv.getContext("webgl", {alpha: true, premultipliedAlpha: true, antialias: true});
+  viewer = new skinview3d.SkinViewer({canvas: cv, width: cv.clientWidth || 300, height: cv.clientHeight || 300, skin: SKIN, pixelRatio: "match-device"});
+  viewer.background = null;
+  viewer.renderer.setClearColor(0x000000, 0);
+  viewer.controls.enabled = false;
+  viewer.fov = 38; viewer.zoom = 0.68;
+  viewer.globalLight.intensity = 3; viewer.cameraLight.intensity = 0.6;
+  v3 = viewer.camera.position.clone();
+  viewer.animation = new skinview3d.FunctionAnimation((pl, t, dt) => {
+    const k = pl.skin;
+    k.leftLeg.rotation.set(0, 0, 0); k.rightLeg.rotation.set(0, 0, 0); k.body.rotation.set(0, 0, 0);
+    k.leftArm.rotation.set(0, 0, Math.cos(t * 2) * 0.03 + 0.06);
+    k.rightArm.rotation.set(0, 0, Math.cos(t * 2 + Math.PI) * 0.03 - 0.06);
+    pl.position.set(px, Math.sin(t * 2) * 0.12, 0); pl.rotation.set(0, mx * 0.25, 0);
+    hy += (mx * 0.75 - hy) * 0.12; hx += (my * 0.4 - hx) * 0.12;
+    k.head.rotation.set(hx, hy, 0);
+    if (!act) { clockIdle += dt; if (clockIdle > nextIdle) { clockIdle = 0; nextIdle = 5 + Math.random() * 4; idleAct(); } }
+    if (act) {
+      at += dt; const p = Math.min(1, at / act.d), e = p < .5 ? 2 * p * p : 1 - ((-2 * p + 2) ** 2) / 2, s1 = Math.sin(p * Math.PI);
+      const n = act.n;
+      if (n === "wave") { k.rightArm.rotation.x = Math.PI; k.rightArm.rotation.z = Math.sin(at * 12) * 0.5; }
+      if (n === "jump") { pl.position.y = s1 * 7; k.leftArm.rotation.x = k.rightArm.rotation.x = Math.PI * 0.9 * s1; k.leftLeg.rotation.x = -.4 * s1; k.rightLeg.rotation.x = .4 * s1; }
+      if (n === "spin") { pl.rotation.y = e * Math.PI * 2; }
+      if (n === "nod") { k.head.rotation.x = Math.sin(at * 12) * 0.35; }
+      if (n === "look") { k.head.rotation.y = Math.sin(p * Math.PI * 2) * 0.9; k.head.rotation.x = -0.1; }
+      if (n === "stretch") { k.leftArm.rotation.x = k.rightArm.rotation.x = Math.PI * s1; k.leftArm.rotation.z = .3 * s1; k.rightArm.rotation.z = -.3 * s1; k.head.rotation.x = -.3 * s1; }
+      if (n === "pointL" || n === "pointR") { const sg = n === "pointL" ? 1 : -1; pl.rotation.y = sg * 0.6 * s1; k.rightArm.rotation.x = -Math.PI / 2 * s1; }
+      if (n === "dance") { const w = Math.sin(at * 10); k.leftArm.rotation.x = w; k.rightArm.rotation.x = -w; k.leftLeg.rotation.x = -w * .6; k.rightLeg.rotation.x = w * .6; pl.rotation.y = Math.sin(at * 3) * .5; pl.position.y = Math.abs(Math.sin(at * 10)) * 2; }
+      if (n === "walk") {
+        const from = act.from, to = act.to, dir = to > from ? 1 : -1, turn = Math.min(1, at * 4, (act.d - at) * 4);
+        px = from + (to - from) * e; pl.position.x = px;
+        pl.rotation.y = dir * Math.PI / 2 * turn;
+        const w = Math.sin(at * 9) * 0.6 * turn;
+        k.leftLeg.rotation.x = w; k.rightLeg.rotation.x = -w; k.leftArm.rotation.x = -w; k.rightArm.rotation.x = w;
+        k.head.rotation.y = -dir * 0.3 * turn;
+      }
+      if (n === "shy") { k.leftArm.rotation.x = k.rightArm.rotation.x = -1.2 * s1; k.leftArm.rotation.z = .6 * s1; k.rightArm.rotation.z = -.6 * s1; k.head.rotation.x = .35 * s1; }
+      if (p >= 1) act = null;
+    }
+    pl.updateMatrixWorld(true);
+    if (!act || act.n === "walk" || act.n === "look" || act.n === "nod" || act.n === "pointL" || act.n === "pointR") {
+      v3.set(0, -12, 0); k.leftLeg.localToWorld(v3); v3.y -= pl.position.y; v3.project(viewer.camera);
+      const fy = Math.round((1 - v3.y) / 2 * cv.clientHeight + cv.offsetTop - 4);
+      if (Math.abs(fy - footY) > 1) { footY = fy; isl0.style.transform = `translateY(${fy}px)`; }
+    }
+    v3.set(0, 10, 0); k.head.localToWorld(v3); v3.project(viewer.camera);
+    place((v3.x + 1) / 2 * cv.clientWidth, (1 - v3.y) / 2 * cv.clientHeight + cv.offsetTop);
+  });
+  const fit = () => viewer.setSize(stage.clientWidth, Math.max(60, stage.clientHeight - 40));
+  const roN = new ResizeObserver(fit); roN.observe(stage);
+} catch (err) { cv.style.display = "none"; tagn.style.display = "none"; bub.style.position = "relative"; }
+
+const IDLE_ACTS = ["walk", "walk", "look", "stretch", "jump", "wave", "shy"];
+const idleAct = () => {
+  const n = IDLE_ACTS[Math.floor(Math.random() * IDLE_ACTS.length)];
+  if (n === "walk") { const fx = stage.classList.contains("fixed"), R = fx ? 2.5 : 7; let to = (Math.random() * 2 - 1) * R; if (Math.abs(to - px) < R * .4) to = px > 0 ? -R * .7 : R * .7; doAct("walk", 2.6, {from: px, to}); }
+  else doAct(n, n === "look" ? 2.6 : 1.8);
+};
+window.addEventListener("pointermove", e => {
+  const r = stage.getBoundingClientRect();
+  mx = Math.max(-1, Math.min(1, (e.clientX - (r.left + r.width / 2)) / (innerWidth / 2)));
+  my = Math.max(-1, Math.min(1, (e.clientY - (r.top + r.height * .3)) / (innerHeight / 2)));
+});
+const poke = () => { doAct(["wave", "jump", "spin", "nod", "dance", "shy"][Math.floor(Math.random() * 6)]); say(CLICK[Math.floor(Math.random() * CLICK.length)], 3500); };
+stage.addEventListener("click", poke);
+stage.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); poke(); } });
+document.getElementById("d-ori").addEventListener("pointerenter", () => { doAct("pointL"); say("CurseForge! A escolha clássica.", 3500); });
+document.getElementById("d-tl").addEventListener("pointerenter", () => { doAct("pointR"); say("TLauncher? Te mostro o caminho.", 3500); });
+document.getElementById("sparks").innerHTML = Array.from({length: 14}, (_, i) => `<span class="spark${i % 3 ? "" : " b"}" style="left:${8 + (i * 37) % 84}%;top:${20 + (i * 23) % 60}%;animation-delay:-${(i * .7) % 3}s;animation-duration:${2.5 + (i % 4) * .6}s"></span>`).join("");
+
+/* ---------- Mimi acompanha a rolagem ---------- */
+const sw = document.getElementById("stagewrap");
+const ioS = new IntersectionObserver(es => {
+  for (const e of es) {
+    const fx = !e.isIntersecting;
+    if (fx !== stage.classList.contains("fixed")) { stage.classList.toggle("fixed", fx); if (fx) { if (Math.abs(px) > 2.5) doAct("walk", 1.2, {from: px, to: 0}); else doAct("wave", 1.4); if (!document.body.classList.contains("chosen")) say("Tô aqui com você! Escolha um caminho.", 3800); } }
+  }
+}, {threshold: 0.15});
+ioS.observe(sw);
+let lastTold = "";
+const pending = key => { const list = key === "o" ? ORI : TL; return list.findIndex((x, i) => !done[key + i]); };
+const tellPending = (key, force) => {
+  const tips = key === "o" ? TIPS_O : TIPS_T, mob = matchMedia("(max-width:600px)").matches;
+  const i = mob && cur[key] !== undefined ? cur[key] : pending(key);
+  const tag = key + i;
+  if (!force && tag === lastTold) return; lastTold = tag;
+  if (i < 0) { doAct("dance", 3); say("Tudo pronto! Te vejo no lobby ✦", 5000); return; }
+  doAct(["nod", "pointL", "wave", "jump", "look", "stretch", "nod"][i % 7], 1.6);
+  say(`Passo ${i + 1}: ${tips[i]}`, 6500);
+};
+const ioStep = new IntersectionObserver(es => {
+  for (const e of es) if (e.isIntersecting) tellPending(e.target.id === "p-tl" ? "t" : "o");
+}, {threshold: 0.12});
+const watchSteps = () => { ioStep.disconnect(); document.querySelectorAll(".path.on").forEach(el => ioStep.observe(el)); };
+
+/* ---------- passos ---------- */
+let done = {};
+try { done = JSON.parse(localStorage.getItem("snk-tut") || "{}"); } catch (e) {}
+const save = () => { try { localStorage.setItem("snk-tut", JSON.stringify(done)); } catch (e) {} };
+const cur = {};
+const render = (id, list, key) => {
+  if (cur[key] === undefined) { const f = list.findIndex((s, i) => !done[key + i]); cur[key] = f < 0 ? list.length - 1 : f; }
+  document.getElementById("s-" + id).innerHTML = list.map((s, i) => {
+    const k = key + i, ok = !!done[k];
+    return `<li class="step pc${ok ? " done" : ""}${i === cur[key] ? " cur" : ""}" id="${k}" style="animation-delay:${i * 70}ms">
+      <div class="num" aria-hidden="true">${i + 1}</div>
+      <div><h3>${s.t}</h3><p>${s.d}</p>
+      <div class="acts">${s.a ? s.a() : ""}<button class="chk" type="button" data-k="${k}" aria-pressed="${ok}">${ok ? "✓ Feito" : "Marcar como feito"}</button></div></div></li>`;
+  }).join("");
+  const n = list.filter((s, i) => done[key + i]).length;
+  document.getElementById("g-" + id).textContent = `${n} de ${list.length} passos`;
+  const b = document.getElementById("b-" + id);
+  b.style.gridTemplateColumns = `repeat(${list.length},minmax(0,1fr))`;
+  b.innerHTML = list.map((s, i) => `<span class="${done[key + i] ? "f" : ""}"></span>`).join("");
+  const c = cur[key];
+  document.getElementById("n-" + id).innerHTML = `<button class="btn" type="button" data-nav="-1" data-key="${key}" ${c === 0 ? "disabled" : ""}>← Anterior</button><span>Passo ${c + 1} de ${list.length}</span><button class="btn" type="button" data-nav="1" data-key="${key}" ${c === list.length - 1 ? "disabled" : ""}>Próximo →</button>`;
+  return n === list.length;
+};
+const all = () => { const a = render("ori", ORI, "o"), b = render("tl", TL, "t"); if (typeof watchSteps === "function") watchSteps(); return a || b; };
+document.getElementById("faq").innerHTML = FAQ.map(f => `<details class="pc" name="faq"><summary>${f[0]}</summary><p>${f[1]}</p></details>`).join("");
+document.getElementById("faq").addEventListener("toggle", e => {
+  if (!e.target.open) return;
+  document.querySelectorAll("#faq details[open]").forEach(d => { if (d !== e.target) d.open = false; });
+}, true);
+const endD = document.getElementById("end-discord");
+if (LINKS.discord) { endD.href = LINKS.discord; endD.target = "_blank"; endD.rel = "noopener"; } else { endD.classList.add("off"); endD.textContent = "Discord · em breve"; endD.removeAttribute("href"); }
+
+const show = () => {
+  const h = location.hash.replace("#", ""), t = h === "tlauncher" ? "tl" : h === "original" ? "ori" : "";
+  if (!t && location.hash) { try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} }
+  for (const p of ["ori", "tl"]) { document.getElementById("p-" + p).classList.toggle("on", p === t); document.getElementById("d-" + p).classList.toggle("on", p === t); }
+  document.body.classList.toggle("chosen", !!t);
+  watchSteps();
+  return t;
+};
+window.addEventListener("hashchange", () => {
+  show();
+  const t = location.hash === "#tlauncher" ? "p-tl" : "p-ori";
+  document.getElementById(t).scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
+  lastTold = ""; tellPending(location.hash === "#tlauncher" ? "t" : "o", true);
+});
+
+const toast = document.getElementById("toast");
+let tt;
+const pop = m => { toast.textContent = m; toast.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => toast.classList.remove("show"), 1800); };
+document.addEventListener("click", e => {
+  const nv = e.target.closest("[data-nav]");
+  if (nv && !nv.disabled) {
+    const key = nv.dataset.key, list = key === "o" ? ORI : TL;
+    cur[key] = Math.max(0, Math.min(list.length - 1, cur[key] + +nv.dataset.nav)); all();
+    document.getElementById(key === "o" ? "p-ori" : "p-tl").scrollIntoView({block: "start"});
+    tellPending(key, true);
+    return;
+  }
+  const c = e.target.closest("[data-k]");
+  if (c) {
+    const k = c.dataset.k; done[k] = !done[k]; save();
+    const key = k[0], list = key === "o" ? ORI : TL, idx = +k.slice(1);
+    if (done[k] && idx === cur[key] && idx < list.length - 1 && matchMedia("(max-width:600px)").matches) cur[key] = idx + 1;
+    const fin = all();
+    if (done[k]) { if (fin) { doAct("dance", 3); say("Pronto! Te vejo no lobby ✦", 5000); } else { setTimeout(() => tellPending(key, true), 50); } }
+    return;
+  }
+  const cp = e.target.closest("[data-copy]");
+  if (cp) navigator.clipboard.writeText(cp.dataset.copy).then(() => pop("Endereço copiado!")).catch(() => pop("Selecione e copie o endereço"));
+});
+
+/* ---------- céu, brasas e ilha em pixels ---------- */
+const sky = document.getElementById("sky"), isl = document.getElementById("isl");
+let seed = 7;
+const rnd = () => (seed = seed * 16807 % 2147483647) / 2147483647;
+const drawSky = () => {
+  const W = sky.clientWidth, H = sky.clientHeight; if (!W) return; seed = 7; let o = "";
+  for (let i = 0; i < 110; i++) {
+    const x = rnd() * W, y = rnd() * H * .85, r = rnd() < .2 ? 4 : 2;
+    o += `<rect x="${x | 0}" y="${y | 0}" width="${r}" height="${r}" fill="#ece4d6" opacity="${(.3 + rnd() * .6).toFixed(2)}" ${rnd() < .35 ? 'class="tw" style="animation-delay:' + (rnd() * 3).toFixed(1) + 's"' : ""}/>`;
+  }
+  sky.innerHTML = o;
+};
+const drawIsl = () => {
+  const W = isl.clientWidth, H = isl.clientHeight; if (!W) return; seed = 11; let o = "";
+  const P = 8, cols = Math.round(Math.min(W * .62, 260) / P), x0 = W / 2 - cols * P / 2;
+  for (let c = 0; c < cols; c++) {
+    const t = Math.abs(c - cols / 2 + .5) / (cols / 2), depth = Math.max(1, Math.round((1 - t ** 1.5) * 7 + rnd() * 1.5));
+    for (let r = 0; r < depth; r++) o += `<rect x="${x0 + c * P}" y="${4 + r * P}" width="${P}" height="${P}" fill="${r === 0 ? "#4a3d43" : r < 2 ? "#2e2529" : "#1f191b"}"/>`;
+    if (rnd() < .18) o += `<rect x="${x0 + c * P + 2}" y="${4 + depth * P}" width="4" height="${P * (1 + Math.floor(rnd() * 3))}" fill="#7a0c12"/>`;
+    if (rnd() < .12) o += `<rect x="${x0 + c * P}" y="4" width="${P}" height="4" fill="#c4202c"/>`;
+  }
+  isl.innerHTML = o;
+};
+const roS = new ResizeObserver(() => { drawSky(); drawIsl(); });
+roS.observe(sky); roS.observe(isl);
+const em = document.getElementById("embers");
+em.innerHTML = Array.from({length: 18}, (_, i) => `<span class="ember" style="left:${(i * 53) % 100}%;animation-duration:${8 + (i * 7) % 9}s;animation-delay:-${(i * 3) % 9}s;opacity:${.4 + (i % 4) * .15}"></span>`).join("");
+
+if (location.hash) { try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} }
+all(); show();
+setTimeout(() => { doAct("wave", 2.2); say("Oi! Eu sou a Mimi. Escolha seu caminho aqui embaixo!", 6000); }, 600);
+}
+</script>
+</body>
+</html>

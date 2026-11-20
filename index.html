@@ -76,6 +76,12 @@ h1 b{color:var(--red3);display:inline-block;animation:glitch 4s steps(1) infinit
 @keyframes blink{50%{background:var(--red3)}}
 .btn.mini{min-height:40px;padding:0 12px;font-size:14px;flex:none}
 @media(max-width:600px){.note{flex-wrap:wrap}.note .btn.mini{width:100%;justify-content:center}}
+.ovar{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
+.ovar button{min-height:44px;padding:0 16px;border:2px solid var(--line);background:#1d1214;color:var(--mute);font:inherit;font-size:15px;font-weight:700;cursor:pointer}
+.ovar button.on{background:var(--red2);border-color:var(--red2);color:#fff;box-shadow:inset -4px -4px 0 #0005}
+.ovar button:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.ovar small{flex-basis:100%;color:var(--mute);font-size:14px}
+@media(max-width:600px){.ovar button{flex:1 1 100%}}
 .path{display:none}
 .path.on{display:block}
 .phead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 20px;margin:34px 0 16px}
@@ -172,7 +178,7 @@ body:not(.chosen) .after{display:none}
 <main class="band" style="padding-top:0">
 <div class="wrap">
 <nav class="doors" aria-label="Escolha seu caso">
-<a class="door ori pc" href="#original" id="d-ori"><span class="tag">Comprei o jogo</span><h2>Minecraft original</h2><p>Instalação pelo CurseForge, com o modpack que já vem pronto.</p></a>
+<a class="door ori pc" href="#original" id="d-ori"><span class="tag">Comprei o jogo</span><h2>Minecraft original</h2><p>Pelo CurseForge (modpack pronto) ou pelo launcher oficial com Fabric.</p></a>
 <a class="door tl pc" href="#tlauncher" id="d-tl"><span class="tag">Jogo pelo TLauncher</span><h2>TLauncher</h2><p>Fabric 26.3 e a pasta de mods colocada à mão.</p></a>
 </nav>
 <div class="note"><span class="bang" aria-hidden="true">!</span><div class="ntx"><b>Antes de tudo:</b> abra um ticket com seu <u>nick exato</u>.<small>maiúsculas e minúsculas contam · horário: 19h às 23h</small></div><a class="btn mini" id="note-btn" href="https://discord.gg/snicket" target="_blank" rel="noopener">Abrir ticket</a></div>
@@ -192,6 +198,7 @@ body:not(.chosen) .after{display:none}
 </section>
 <section class="path orip" id="p-ori" aria-label="Tutorial original">
 <div class="phead"><h2>Minecraft original</h2><span class="prog" id="g-ori"></span></div>
+<div class="ovar" id="ovar" role="group" aria-label="Como instalar"><button type="button" data-var="o">Com CurseForge</button><button type="button" data-var="f">Sem CurseForge (launcher oficial)</button><small id="ovar-s"></small></div>
 <div class="bar" id="b-ori"></div>
 <ol class="steps" id="s-ori"></ol><div class="mnav" id="n-ori"></div>
 </section>
@@ -232,7 +239,8 @@ const LINKS = {
   modpack: "https://drive.google.com/uc?export=download&id=1ztcRNXQ5ryZh6_Jd1vVMLvWiDIyX2uYp",
   tlauncher: "https://tlauncher.org/#dPopup",
   mods: "https://drive.google.com/uc?export=download&id=1iemqGgfXqJ4xupmqijn9qlVHexja7lVU",
-  shader: "https://www.curseforge.com/minecraft/shaders/complementary-unbound"
+  shader: "https://www.curseforge.com/minecraft/shaders/complementary-unbound",
+  fabric: "https://fabricmc.net/use/installer/"
 };
 const IP = "snicket.exaroton.me";
 /* ================================================================= */
@@ -256,6 +264,17 @@ const ORI = [
   {t:"Entre e toque na estrela", d:"Você nasce no lobby da Snicket. Pegue o kit no baú flutuante e toque na estrela ★ do centro para ir ao mundo.<br>Se pedir senha: primeira vez <code>/register suasenha suasenha</code>, depois <code>/login suasenha</code>."},
   {t:"Opcional: Complementary Shaders – Unbound", d:"Baixe o shader <b>Complementary Shaders – Unbound</b>, coloque o arquivo na pasta <code>shaderpacks</code> e ative em <b>Opções → Vídeo → Shader Packs</b>. PC fraco? Pule este passo.", a:()=>btn("shader","Complementary Unbound")}
 ];
+const TIPS_F = ["Primeiro o ticket, com o nick exato!","Client, 26.3 e Loader 0.20.1. Confere duas vezes!","Abre uma vez e fecha, só pra criar as pastas.","São uns 91 MB, pega um copo d'água.","Os .jar direto na pasta mods, nada de pasta dentro de pasta!","Perfil fabric-loader-26.3, não esquece!","Pega o kit no baú antes de tocar na estrela!","Shader deixa tudo lindo... se o PC aguentar."];
+const FB = [
+  {t:"Abra seu ticket", d:"Mande no ticket o seu nick exato do Minecraft para a gerência te colocar na lista do servidor.", a:()=>btn("discord","Abrir o Discord")},
+  {t:"Instale o Fabric", d:"Baixe o instalador oficial do Fabric e abra. Escolha <b>Client</b>, versão <b>26.3</b>, Loader <b>0.20.1</b> e clique em <b>Install</b>.", a:()=>btn("fabric","Baixar instalador Fabric")},
+  {t:"Abra o launcher uma vez", d:"No Minecraft Launcher, escolha o perfil <b>fabric-loader-26.3</b>, clique em <b>Jogar</b>, espere chegar no menu e <b>feche</b>. Isso cria as pastas certas."},
+  {t:"Baixe a pasta de mods", d:"É o arquivo <code>mods-snicket-jogadores.zip</code> (cerca de 91 MB).", a:()=>btn("mods","Baixar mods")},
+  {t:"Coloque os mods", d:"Aperte <b>Windows + R</b>, cole <code>%appdata%\\.minecraft</code> e dê Enter. Abra a pasta <code>mods</code> (se não existir, crie) e extraia <b>os arquivos .jar</b> dentro dela.<br><span class=\"warn\">Direto na pasta mods, sem pasta dentro. Se tiver mods antigos aí, tire antes.</span>"},
+  {t:"Abra o jogo e adicione o servidor", d:"No launcher, selecione <b>fabric-loader-26.3</b> e clique em <b>Jogar</b>. No jogo: <b>Multijogador</b> → <b>Adicionar servidor</b>. Nome: <code>SNICKET 1.0</code>.", a:ipBox},
+  {t:"Entre e toque na estrela", d:"Você nasce no lobby da Snicket. Pegue o kit no baú flutuante e toque na estrela ★ do centro para ir ao mundo.<br>Se pedir senha: primeira vez <code>/register suasenha suasenha</code>, depois <code>/login suasenha</code>."},
+  {t:"Opcional: Complementary Shaders – Unbound", d:"Coloque o arquivo do shader na pasta <code>shaderpacks</code>, dentro da mesma <code>.minecraft</code>, e ative em <b>Opções → Vídeo → Shader Packs</b>. PC fraco? Pule este passo.", a:()=>btn("shader","Complementary Unbound")}
+];
 const TL = [
   {t:"Abra seu ticket", d:"Mande no ticket o nick que você usa no TLauncher, exatamente igual.", a:()=>btn("discord","Abrir o Discord")},
   {t:"Instale o TLauncher e escolha Fabric 26.3", d:"Na lista de versões, selecione <b>Fabric 26.3</b>. Clique em <b>Entrar</b>, espere o jogo abrir e <b>feche</b>. Isso cria as pastas certas.", a:()=>btn("tlauncher","Baixar TLauncher")},
@@ -266,6 +285,7 @@ const TL = [
   {t:"Faça seu login", d:"Primeira vez: <code>/register suasenha suasenha</code>. Depois: <code>/login suasenha</code>. Então toque na estrela ★ do lobby.<br>Skin: <code>/skin set NickDeAlguémComASkin</code>."}
 ];
 const FAQ = [
+  ["Não quero instalar o CurseForge","Sem problema: no caminho <b>Minecraft original</b>, escolha <b>Sem CurseForge (launcher oficial)</b>. Você instala só o Fabric e coloca os mods à mão."],
   ["“Incompatible mods found”","Algum mod está na versão errada ou repetido. Apague tudo da pasta mods e coloque de novo os mods do link oficial."],
   ["“Você não está na lista-branca”","Abra um ticket com o seu nick exatamente igual ao do jogo, com as mesmas maiúsculas e minúsculas."],
   ["O jogo trava ou fica lento","Desligue o shader. No TLauncher, aumente a memória nas configurações: 4 GB é o ideal."],
@@ -274,6 +294,10 @@ const FAQ = [
   ["O servidor não aparece online","Ele abre das 19h às 23h. Fora desse horário, pode estar desligado."]
 ];
 
+const LIST = k => k === "t" ? TL : k === "f" ? FB : ORI;
+const TIPS = k => k === "t" ? TIPS_T : k === "f" ? TIPS_F : TIPS_O;
+let oKey = "o";
+try { if (localStorage.getItem("snk-var") === "f") oKey = "f"; } catch (e) {}
 /* ---------- fala da Mimi ---------- */
 const bub = document.getElementById("bub"), bubBox = document.getElementById("bubBox"), tail = document.getElementById("tail");
 let typing, idleT, said = 0;
@@ -283,7 +307,7 @@ const say = (txt, hold) => {
   typing = setInterval(() => { bub.textContent = txt.slice(0, ++i); if (i >= txt.length) clearInterval(typing); }, 28);
   idleT = setTimeout(idle, hold || 5200);
 };
-const IDLE = ["Bem-vindo à noite Snicket...", "Escolha seu caminho logo aqui embaixo!", "Comprou o jogo? Vai de CurseForge.", "Joga pelo TLauncher? Tem tutorial também.", "Pode clicar em mim, eu não mordo... muito.", "A noite guarda segredos ✦", "Já abriu seu ticket?"];
+const IDLE = ["Bem-vindo à noite Snicket...", "Escolha seu caminho logo aqui embaixo!", "Comprou o jogo? CurseForge ou launcher oficial, você escolhe.", "Joga pelo TLauncher? Tem tutorial também.", "Pode clicar em mim, eu não mordo... muito.", "A noite guarda segredos ✦", "Já abriu seu ticket?"];
 const CLICK = ["Ei! Isso faz cócegas.", "Olha esse pulo!", "Wiii!", "Um Snicket nunca fica pra trás!", "Te vejo no lobby ✦", "Isso foi um susto?"];
 const idle = () => say(IDLE[said++ % IDLE.length]);
 
@@ -382,9 +406,9 @@ const ioS = new IntersectionObserver(es => {
 }, {threshold: 0.15});
 ioS.observe(sw);
 let lastTold = "";
-const pending = key => { const list = key === "o" ? ORI : TL; return list.findIndex((x, i) => !done[key + i]); };
+const pending = key => { const list = LIST(key); return list.findIndex((x, i) => !done[key + i]); };
 const tellPending = (key, force) => {
-  const tips = key === "o" ? TIPS_O : TIPS_T, mob = matchMedia("(max-width:600px)").matches;
+  const tips = TIPS(key), mob = matchMedia("(max-width:600px)").matches;
   const i = mob && cur[key] !== undefined ? cur[key] : pending(key);
   const tag = key + i;
   if (!force && tag === lastTold) return; lastTold = tag;
@@ -393,7 +417,7 @@ const tellPending = (key, force) => {
   say(`Passo ${i + 1}: ${tips[i]}`, 6500);
 };
 const ioStep = new IntersectionObserver(es => {
-  for (const e of es) if (e.isIntersecting) tellPending(e.target.id === "p-tl" ? "t" : "o");
+  for (const e of es) if (e.isIntersecting) tellPending(e.target.id === "p-tl" ? "t" : oKey);
 }, {threshold: 0.12});
 const watchSteps = () => { ioStep.disconnect(); document.querySelectorAll(".path.on").forEach(el => ioStep.observe(el)); };
 
@@ -420,7 +444,8 @@ const render = (id, list, key) => {
   document.getElementById("n-" + id).innerHTML = `<button class="btn" type="button" data-nav="-1" data-key="${key}" ${c === 0 ? "disabled" : ""}>← Anterior</button><span>Passo ${c + 1} de ${list.length}</span><button class="btn" type="button" data-nav="1" data-key="${key}" ${c === list.length - 1 ? "disabled" : ""}>Próximo →</button>`;
   return n === list.length;
 };
-const all = () => { const a = render("ori", ORI, "o"), b = render("tl", TL, "t"); if (typeof watchSteps === "function") watchSteps(); return a || b; };
+const markVar = () => { document.querySelectorAll("#ovar [data-var]").forEach(b => { const on = b.dataset.var === oKey; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); }); document.getElementById("ovar-s").textContent = oKey === "f" ? "Só o Fabric e a pasta de mods, sem instalar nada além disso." : "O jeito mais fácil: o CurseForge baixa tudo sozinho."; };
+const all = () => { markVar(); const a = render("ori", LIST(oKey), oKey), b = render("tl", TL, "t"); if (typeof watchSteps === "function") watchSteps(); return a || b; };
 document.getElementById("faq").innerHTML = FAQ.map(f => `<details class="pc" name="faq"><summary>${f[0]}</summary><p>${f[1]}</p></details>`).join("");
 document.getElementById("faq").addEventListener("toggle", e => {
   if (!e.target.open) return;
@@ -441,25 +466,30 @@ window.addEventListener("hashchange", () => {
   show();
   const t = location.hash === "#tlauncher" ? "p-tl" : "p-ori";
   document.getElementById(t).scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
-  lastTold = ""; tellPending(location.hash === "#tlauncher" ? "t" : "o", true);
+  lastTold = ""; tellPending(location.hash === "#tlauncher" ? "t" : oKey, true);
 });
 
 const toast = document.getElementById("toast");
 let tt;
 const pop = m => { toast.textContent = m; toast.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => toast.classList.remove("show"), 1800); };
 document.addEventListener("click", e => {
+  const ov = e.target.closest("[data-var]");
+  if (ov) {
+    if (ov.dataset.var !== oKey) { oKey = ov.dataset.var; try { localStorage.setItem("snk-var", oKey); } catch (e) {} all(); lastTold = ""; tellPending(oKey, true); }
+    return;
+  }
   const nv = e.target.closest("[data-nav]");
   if (nv && !nv.disabled) {
-    const key = nv.dataset.key, list = key === "o" ? ORI : TL;
+    const key = nv.dataset.key, list = LIST(key);
     cur[key] = Math.max(0, Math.min(list.length - 1, cur[key] + +nv.dataset.nav)); all();
-    document.getElementById(key === "o" ? "p-ori" : "p-tl").scrollIntoView({block: "start"});
+    document.getElementById(key === "t" ? "p-tl" : "p-ori").scrollIntoView({block: "start"});
     tellPending(key, true);
     return;
   }
   const c = e.target.closest("[data-k]");
   if (c) {
     const k = c.dataset.k; done[k] = !done[k]; save();
-    const key = k[0], list = key === "o" ? ORI : TL, idx = +k.slice(1);
+    const key = k[0], list = LIST(key), idx = +k.slice(1);
     if (done[k] && idx === cur[key] && idx < list.length - 1 && matchMedia("(max-width:600px)").matches) cur[key] = idx + 1;
     const fin = all();
     if (done[k]) { if (fin) { doAct("dance", 3); say("Pronto! Te vejo no lobby ✦", 5000); } else { setTimeout(() => tellPending(key, true), 50); } }
